@@ -211,7 +211,7 @@ public class IvyBuildNumber extends IvyTask {
                 continue;
             }
 
-            if (matcher.needModuleDescriptor(askedMrid, info.rmr)) {
+            if (matcher.needModuleDescriptor(null, askedMrid, info.rmr)) {
                 ResolvedModuleRevision rmr = ivy.findModule(info.rmr);
                 if (matcher.accept(askedMrid, rmr.getDescriptor())) {
                     foundRevision = info.rmr.getRevision();

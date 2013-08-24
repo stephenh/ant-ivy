@@ -21,6 +21,7 @@ import java.util.Comparator;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
+import org.apache.ivy.plugins.resolver.HasPatternInformation;
 
 /**
  * This interface defines a version matcher, i.e. a class able to tell if the revision asked by a
@@ -69,7 +70,7 @@ public interface VersionMatcher {
      * 
      * @return
      */
-    public boolean needModuleDescriptor(ModuleRevisionId askedMrid, ModuleRevisionId foundMrid);
+    public boolean needModuleDescriptor(HasPatternInformation resolver, ModuleRevisionId askedMrid, ModuleRevisionId foundMrid);
 
     /**
      * Indicates if this version matcher considers that the module found matches the asked one. This

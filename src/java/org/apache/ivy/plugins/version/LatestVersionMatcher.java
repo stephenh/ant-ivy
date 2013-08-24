@@ -24,6 +24,7 @@ import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.module.status.Status;
 import org.apache.ivy.core.module.status.StatusManager;
+import org.apache.ivy.plugins.resolver.HasPatternInformation;
 
 public class LatestVersionMatcher extends AbstractVersionMatcher {
     public LatestVersionMatcher() {
@@ -35,20 +36,17 @@ public class LatestVersionMatcher extends AbstractVersionMatcher {
     }
 
     public boolean accept(ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
+        // Either foundMrid has been pre-filtered (if resolver.hasModuleBeenFilteredForBranch/Status=true), so
+        // we can just return true, or foundMrid has dummy branch/status values and we will need the module
+        // descriptor. Either way, we'll defer to needModuleDescriptor.
         return true;
     }
 
-    public boolean needModuleDescriptor(ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
-        // if asking for a branch, foundMrid will likely have an invalid value that doesn't
-        // come from the module descriptor itself. return true so accept is given the real
-        // module descriptor with the correct branch.
-        if (askedMrid.getBranch() != null) {
-            return true;
-        }
-        List statuses = StatusManager.getCurrent().getStatuses();
-        Status lowest = (Status) statuses.get(statuses.size() - 1);
-        String latestLowest = "latest." + lowest.getName();
-        return !latestLowest.equals(askedMrid.getRevision());
+    public boolean needModuleDescriptor(HasPatternInformation resolver, ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
+        boolean statusOkay = getLowestStatus().equals(askedMrid.getRevision());
+        boolean branchOkay = askedMrid.getBranch() == null
+                || (resolver != null && resolver.hasModuleBeenFilteredForBranch());
+        return !statusOkay || !branchOkay;
     }
 
     public boolean accept(ModuleRevisionId askedMrid, ModuleDescriptor foundMD) {
@@ -69,6 +67,12 @@ public class LatestVersionMatcher extends AbstractVersionMatcher {
      */
     public int compare(ModuleRevisionId askedMrid, ModuleRevisionId foundMrid,
             Comparator staticComparator) {
-        return needModuleDescriptor(askedMrid, foundMrid) ? 0 : 1;
+        return needModuleDescriptor(null, askedMrid, foundMrid) ? 0 : 1;
+    }
+    
+    private static String getLowestStatus() {
+        List statuses = StatusManager.getCurrent().getStatuses();
+        Status lowest = (Status) statuses.get(statuses.size() - 1);
+        return "latest." + lowest.getName();
     }
 }

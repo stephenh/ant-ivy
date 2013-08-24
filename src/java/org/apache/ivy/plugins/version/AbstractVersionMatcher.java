@@ -23,6 +23,7 @@ import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.IvySettingsAware;
+import org.apache.ivy.plugins.resolver.HasPatternInformation;
 import org.apache.ivy.util.Checks;
 
 public abstract class AbstractVersionMatcher implements VersionMatcher, IvySettingsAware {
@@ -45,7 +46,7 @@ public abstract class AbstractVersionMatcher implements VersionMatcher, IvySetti
         this.name = name;
     }
 
-    public boolean needModuleDescriptor(ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
+    public boolean needModuleDescriptor(HasPatternInformation resolver, ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
         return false;
     }
 

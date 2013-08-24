@@ -705,7 +705,7 @@ public abstract class BasicResolver extends AbstractResolver {
                 rejected.add(rres.getRevision() + " (" + rres.getLastModified() + ")");
                 continue;
             }
-            if (versionMatcher.needModuleDescriptor(mrid, foundMrid)) {
+            if (versionMatcher.needModuleDescriptor(this, mrid, foundMrid)) {
                 ResolvedResource r = rmdparser.parse(rres.getResource(), rres.getRevision());
                 if (r == null) {
                     Message.debug("\t" + name + ": impossible to get module descriptor resource: "
