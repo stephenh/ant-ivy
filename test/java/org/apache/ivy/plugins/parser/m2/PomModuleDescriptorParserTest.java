@@ -457,8 +457,8 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
         assertEquals(3, dds.length);
         assertEquals(ModuleRevisionId.newInstance("commons-logging", "commons-logging", "1.0.4"),
             dds[0].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"optional"})),
-            new HashSet(Arrays.asList(dds[0].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"optional", "sources"})), new HashSet(
+                Arrays.asList(dds[0].getModuleConfigurations())));
         // I don't know what it should be. Ivy has no notion of optional dependencies
         // assertEquals(new HashSet(Arrays.asList(new String[] {"compile(*)", "runtime(*)",
         // "master(*)"})), new HashSet(Arrays.asList(dds[0]
@@ -466,21 +466,25 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
 
         assertEquals(ModuleRevisionId.newInstance("cglib", "cglib", "2.0.2"),
             dds[1].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[1].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[1].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[1].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),
             new HashSet(Arrays.asList(dds[1].getDependencyConfigurations("runtime"))));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"sources()"})),
+            new HashSet(Arrays.asList(dds[1].getDependencyConfigurations("sources"))));
 
         assertEquals(ModuleRevisionId.newInstance("cglib", "cglib-extra", "2.0.2"),
             dds[2].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[2].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[2].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[2].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),
             new HashSet(Arrays.asList(dds[2].getDependencyConfigurations("runtime"))));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"sources()"})),
+            new HashSet(Arrays.asList(dds[2].getDependencyConfigurations("sources"))));
     }
 
     public void testDependenciesWithScope() throws Exception {
@@ -496,16 +500,16 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
         assertEquals(3, dds.length);
         assertEquals(ModuleRevisionId.newInstance("odmg", "odmg", "3.0"),
             dds[0].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"runtime"})),
-            new HashSet(Arrays.asList(dds[0].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"runtime", "sources"})), new HashSet(
+                Arrays.asList(dds[0].getModuleConfigurations())));
         assertEquals(
             new HashSet(Arrays.asList(new String[] {"compile(*)", "runtime(*)", "master(*)"})),
             new HashSet(Arrays.asList(dds[0].getDependencyConfigurations("runtime"))));
 
         assertEquals(ModuleRevisionId.newInstance("commons-logging", "commons-logging", "1.0.4"),
             dds[1].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[1].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[1].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[1].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),
@@ -513,8 +517,8 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
 
         assertEquals(ModuleRevisionId.newInstance("cglib", "cglib", "2.0.2"),
             dds[2].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[2].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[2].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[2].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),
@@ -534,8 +538,8 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
         assertEquals(3, dds.length);
         assertEquals(ModuleRevisionId.newInstance("commons-logging", "commons-logging", "1.0.4"),
             dds[0].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[0].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[0].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[0].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),
@@ -544,8 +548,8 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
 
         assertEquals(ModuleRevisionId.newInstance("dom4j", "dom4j", "1.6"),
             dds[1].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[1].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[1].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[1].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),
@@ -557,8 +561,8 @@ public class PomModuleDescriptorParserTest extends AbstractModuleDescriptorParse
 
         assertEquals(ModuleRevisionId.newInstance("cglib", "cglib", "2.0.2"),
             dds[2].getDependencyRevisionId());
-        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime"})), new HashSet(
-                Arrays.asList(dds[2].getModuleConfigurations())));
+        assertEquals(new HashSet(Arrays.asList(new String[] {"compile", "runtime", "sources"})),
+            new HashSet(Arrays.asList(dds[2].getModuleConfigurations())));
         assertEquals(new HashSet(Arrays.asList(new String[] {"master(*)", "compile(*)"})),
             new HashSet(Arrays.asList(dds[2].getDependencyConfigurations("compile"))));
         assertEquals(new HashSet(Arrays.asList(new String[] {"runtime(*)"})),

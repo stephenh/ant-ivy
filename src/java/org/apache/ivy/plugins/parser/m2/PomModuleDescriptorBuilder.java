@@ -133,13 +133,13 @@ public class PomModuleDescriptorBuilder {
                     dd.addDependencyConfiguration("optional", "compile(*)");
                     // dd.addDependencyConfiguration("optional", "provided(*)");
                     dd.addDependencyConfiguration("optional", "master(*)");
-
                 } else {
                     dd.addDependencyConfiguration("compile", "compile(*)");
                     // dd.addDependencyConfiguration("compile", "provided(*)");
                     dd.addDependencyConfiguration("compile", "master(*)");
                     dd.addDependencyConfiguration("runtime", "runtime(*)");
                 }
+                dd.addDependencyConfiguration("sources", "sources()");
             }
         });
         MAVEN2_CONF_MAPPING.put("provided", new ConfMapper() {
@@ -155,6 +155,7 @@ public class PomModuleDescriptorBuilder {
                     dd.addDependencyConfiguration("provided", "runtime(*)");
                     dd.addDependencyConfiguration("provided", "master(*)");
                 }
+                dd.addDependencyConfiguration("sources", "sources()");
             }
         });
         MAVEN2_CONF_MAPPING.put("runtime", new ConfMapper() {
@@ -163,12 +164,12 @@ public class PomModuleDescriptorBuilder {
                     dd.addDependencyConfiguration("optional", "compile(*)");
                     dd.addDependencyConfiguration("optional", "provided(*)");
                     dd.addDependencyConfiguration("optional", "master(*)");
-
                 } else {
                     dd.addDependencyConfiguration("runtime", "compile(*)");
                     dd.addDependencyConfiguration("runtime", "runtime(*)");
                     dd.addDependencyConfiguration("runtime", "master(*)");
                 }
+                dd.addDependencyConfiguration("sources", "sources()");
             }
         });
         MAVEN2_CONF_MAPPING.put("test", new ConfMapper() {
@@ -182,6 +183,7 @@ public class PomModuleDescriptorBuilder {
             public void addMappingConfs(DefaultDependencyDescriptor dd, boolean isOptional) {
                 // optional doesn't make sense in the system scope
                 dd.addDependencyConfiguration("system", "master(*)");
+                dd.addDependencyConfiguration("sources", "sources()");
             }
         });
     }
