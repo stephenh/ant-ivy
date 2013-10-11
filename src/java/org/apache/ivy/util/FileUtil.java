@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -195,13 +196,18 @@ public final class FileUtil {
                 throw new IOException("impossible to copy: destination is not a file: " + dest);
             }
             if (overwrite) {
-                if (!dest.canWrite()) {
-                    dest.delete();
-                } // if dest is writable, the copy will overwrite it without requiring a delete
+                // always call .delete, because if dest is a symlink, we don't want to write back to the origin,
+                // which might be a completely different artifact in the ivycache.
+                if (!dest.delete()) {
+                    throw new IOException("impossible to copy: destination coult not be deleted: " + dest);
+                }
             } else {
                 Message.verbose(dest + " already exists, nothing done");
                 return false;
             }
+        } else if (Files.isSymbolicLink(dest.toPath())) {
+            // dest.exists() can lie for symbolic links if the target also does not exist
+            dest.delete();
         }
         if (dest.getParentFile() != null) {
             dest.getParentFile().mkdirs();
