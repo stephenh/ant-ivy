@@ -319,6 +319,7 @@ public final class PomModuleDescriptorParser implements ModuleDescriptorParser {
             if (!ArtifactOrigin.isUnknown(mainArtifact)) {
                 String mainArtifactLocation = mainArtifact.getLocation();
 
+                // Look for the sources
                 ArtifactOrigin sourceArtifact = resolver.locate(mdBuilder.getSourceArtifact());
                 if (!ArtifactOrigin.isUnknown(sourceArtifact)
                         && !sourceArtifact.getLocation().equals(mainArtifactLocation)) {
@@ -336,6 +337,8 @@ public final class PomModuleDescriptorParser implements ModuleDescriptorParser {
                         Message.debug("no source artifact found for " + mrid);
                     }
                 }
+
+                // Now look for javadoc
                 ArtifactOrigin javadocArtifact = resolver.locate(mdBuilder.getJavadocArtifact());
                 if (!ArtifactOrigin.isUnknown(javadocArtifact)
                         && !javadocArtifact.getLocation().equals(mainArtifactLocation)) {
@@ -343,6 +346,16 @@ public final class PomModuleDescriptorParser implements ModuleDescriptorParser {
                     mdBuilder.addJavadocArtifact();
                 } else {
                     Message.debug("no javadoc artifact found for " + mrid);
+                }
+
+                // Now look for shaded
+                ArtifactOrigin shadedArtifact = resolver.locate(mdBuilder.getShadedArtifact());
+                if (!ArtifactOrigin.isUnknown(shadedArtifact)
+                        && !shadedArtifact.getLocation().equals(mainArtifactLocation)) {
+                    Message.debug("shaded artifact found for " + mrid);
+                    mdBuilder.addShadedArtifact();
+                } else {
+                    Message.debug("no shaded artifact found for " + mrid);
                 }
             }
         }
