@@ -353,6 +353,15 @@ public final class PomModuleDescriptorParser implements ModuleDescriptorParser {
                 if (!ArtifactOrigin.isUnknown(shadedArtifact)
                         && !shadedArtifact.getLocation().equals(mainArtifactLocation)) {
                     Message.debug("shaded artifact found for " + mrid);
+                    mdBuilder
+                            .getModuleDescriptor()
+                            .addConfiguration(
+                                new Configuration(
+                                        "shaded",
+                                        Visibility.PUBLIC,
+                                        "this configuration contains the shaded artifact of this module, if any.",
+                                        new String[0], true, null));
+
                     mdBuilder.addShadedArtifact();
                 } else {
                     Message.debug("no shaded artifact found for " + mrid);

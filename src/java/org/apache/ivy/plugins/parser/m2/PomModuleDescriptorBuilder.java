@@ -107,9 +107,6 @@ public class PomModuleDescriptorBuilder {
             new Configuration("javadoc", Visibility.PUBLIC,
                     "this configuration contains the javadoc artifact of this module, if any.",
                     new String[0], true, null),
-            new Configuration("shaded", Visibility.PUBLIC,
-                    "this configuration contains the shaded artifact of this module, if any.",
-                    new String[0], true, null),
             new Configuration("optional", Visibility.PUBLIC, "contains all optional dependencies",
                     new String[0], true, null)};
 
