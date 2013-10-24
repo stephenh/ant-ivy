@@ -154,7 +154,6 @@ public class PomModuleDescriptorBuilder {
                     dd.addDependencyConfiguration("provided", "provided(*)");
                     dd.addDependencyConfiguration("provided", "runtime(*)");
                     dd.addDependencyConfiguration("provided", "master(*)");
-                    dd.addDependencyConfiguration("sources", "sources()");
                 }
             }
         });
@@ -183,7 +182,6 @@ public class PomModuleDescriptorBuilder {
             public void addMappingConfs(DefaultDependencyDescriptor dd, boolean isOptional) {
                 // optional doesn't make sense in the system scope
                 dd.addDependencyConfiguration("system", "master(*)");
-                dd.addDependencyConfiguration("sources", "sources()");
             }
         });
     }
