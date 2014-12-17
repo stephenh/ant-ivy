@@ -421,8 +421,8 @@ public abstract class BasicResolver extends AbstractResolver {
         if (!getSettings().getVersionMatcher().accept(systemMrid, systemMd)) {
             throw new UnresolvedDependencyException("\t" + getName()
                     + ": unacceptable revision => was="
-                    + systemMd.getResolvedModuleRevisionId().getRevision() + " required="
-                    + systemMrid.getRevision());
+                    + systemMd.getResolvedModuleRevisionId() + " required="
+                    + systemMrid);
         }
     }
 
