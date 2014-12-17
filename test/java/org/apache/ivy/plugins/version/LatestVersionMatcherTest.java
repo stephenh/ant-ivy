@@ -20,12 +20,15 @@ package org.apache.ivy.plugins.version;
 import junit.framework.TestCase;
 
 import org.apache.ivy.core.IvyContext;
+import org.apache.ivy.core.module.descriptor.DefaultModuleDescriptor;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.module.status.Status;
 import org.apache.ivy.core.module.status.StatusManager;
+import org.apache.ivy.plugins.resolver.HasPatternInformation;
 
 public class LatestVersionMatcherTest extends TestCase {
     private LatestVersionMatcher vm = new LatestVersionMatcher();
+    private StubHasPatternInformation i = new StubHasPatternInformation();
 
     protected void setUp() {
         IvyContext.pushNewContext();
@@ -41,6 +44,13 @@ public class LatestVersionMatcherTest extends TestCase {
         assertNeed("latest.integration", false);
     }
 
+    public void testNeedModuleDescriptorForBranches() throws Exception {
+        assertNeed("latest.release", "trunk", true);
+        assertNeed("latest.milestone", "trunk", true);
+        // different branches will have different latest.integration artifacts
+        assertNeed("latest.integration", "trunk", true);
+    }
+
     public void testNeedModuleDescriptorCustomStatus() throws Exception {
         StatusManager.getCurrent().addStatus(new Status("release", false));
         StatusManager.getCurrent().addStatus(new Status("snapshot", true));
@@ -49,9 +59,90 @@ public class LatestVersionMatcherTest extends TestCase {
         assertNeed("latest.snapshot", false);
     }
 
+    public void testAcceptForStandardStatus() throws Exception {
+        assertAccept("latest.release", "release", true);
+        assertAccept("latest.release", "milestone", false);
+        assertAccept("latest.release", "integration", false);
+    }
+
+    public void testAcceptForSameBranches() throws Exception {
+        assertAccept("latest.release", "trunk", "release", "trunk", true);
+        assertAccept("latest.release", "trunk", "milestone", "trunk", false);
+        assertAccept("latest.release", "trunk", "integration", "trunk", false);
+    }
+
+    public void testAcceptForDifferentBranches() throws Exception {
+        assertAccept("latest.release", "trunk", "release", "feature", false);
+        assertAccept("latest.release", "trunk", "milestone", "feature", false);
+        assertAccept("latest.release", "trunk", "integration", "feature", false);
+        // if the user doesn't specify a branch, don't give them some random one
+        assertAccept("latest.release", null, "release", "feature", false);
+    }
+
+    public void testNeedModuleDescriptorIfAskingForBranchAndNotPreFiltered() {
+        assertNeed(i.filteredForBranch(false), "latest.integration", "release", true);
+    }
+
+    public void testDoNotNeedModuleDescriptorIfAskingForBranchAndPreFiltered() {
+        StubHasPatternInformation i = new StubHasPatternInformation();
+        assertNeed(i.filteredForBranch(true), "latest.integration", "release", false);
+    }
+
+    public void testNeedModuleDescriptorIfAskingForBranchAndPreFilteredButNotLowestStatus() {
+        assertNeed(i.filteredForBranch(true), "latest.release", "release", true);
+    }
+
     // assertion helper methods
     private void assertNeed(String askedVersion, boolean b) {
         assertEquals(b, vm.needModuleDescriptor(
-            ModuleRevisionId.newInstance("org", "name", askedVersion), null));
+            null, ModuleRevisionId.newInstance("org", "name", askedVersion), null));
+    }
+
+    private void assertNeed(String askedVersion, String askedBranch, boolean b) {
+        assertNeed(null, askedVersion, askedBranch, b);
+    }
+
+    private void assertNeed(
+            HasPatternInformation resolver,
+            String askedVersion,
+            String askedBranch,
+            boolean b) {
+        assertEquals(
+            b,
+            vm.needModuleDescriptor(
+                resolver,
+                ModuleRevisionId.newInstance("org", "name", askedBranch, askedVersion), null));
+    }
+
+    private void assertAccept(String askedVersion, String foundStatus, boolean b) {
+        ModuleRevisionId askedMrid = ModuleRevisionId.newInstance("org", "name", askedVersion);
+        DefaultModuleDescriptor foundMD = DefaultModuleDescriptor
+                .newDefaultInstance(ModuleRevisionId.newInstance("org", "name", null));
+        foundMD.setStatus(foundStatus);
+        assertEquals(b, vm.accept(askedMrid, foundMD));
+    }
+
+    private void assertAccept(String askedVersion, String askedBranch, String foundStatus,
+            String foundBranch, boolean b) {
+        ModuleRevisionId askedMrid = ModuleRevisionId.newInstance("org", "name", askedBranch,
+            askedVersion);
+        DefaultModuleDescriptor foundMD = DefaultModuleDescriptor
+                .newDefaultInstance(ModuleRevisionId.newInstance("org", "name", foundBranch,
+                    (String) null));
+        foundMD.setStatus(foundStatus);
+        assertEquals(b, vm.accept(askedMrid, foundMD));
+    }
+
+    private static class StubHasPatternInformation implements HasPatternInformation {
+        public boolean hasModuleBeenFilteredForBranch = false;
+
+        public boolean hasModuleBeenFilteredForBranch() {
+            return hasModuleBeenFilteredForBranch;
+        }
+
+	    private StubHasPatternInformation filteredForBranch(boolean b) {
+	        hasModuleBeenFilteredForBranch = b;
+	        return this;
+	    }
     }
 }

@@ -27,6 +27,7 @@ import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.IvySettingsAware;
+import org.apache.ivy.plugins.resolver.HasPatternInformation;
 import org.apache.ivy.util.Checks;
 
 /**
@@ -129,13 +130,13 @@ public class ChainVersionMatcher extends AbstractVersionMatcher {
         return false;
     }
 
-    public boolean needModuleDescriptor(ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
+    public boolean needModuleDescriptor(HasPatternInformation resolver, ModuleRevisionId askedMrid, ModuleRevisionId foundMrid) {
         Checks.checkNotNull(askedMrid, "askedMrid");
         Checks.checkNotNull(foundMrid, "foundMrid");
         for (Iterator iter = matchers.iterator(); iter.hasNext();) {
             VersionMatcher matcher = (VersionMatcher) iter.next();
             if (!iter.hasNext() || matcher.isDynamic(askedMrid)) {
-                return matcher.needModuleDescriptor(askedMrid, foundMrid);
+                return matcher.needModuleDescriptor(resolver, askedMrid, foundMrid);
             }
         }
         return false;

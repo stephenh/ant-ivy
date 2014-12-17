@@ -333,6 +333,16 @@ public abstract class AbstractPatternsBasedResolver extends BasicResolver {
         m2compatible = compatible;
     }
 
+    /** Default implementation that assumes we haven't pre-filtered on branch. */
+    public boolean hasModuleBeenFilteredForBranch() {
+        for (Iterator i = getIvyPatterns().iterator(); i.hasNext();) {
+            if (!((String) i.next()).contains("[branch]")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected ModuleRevisionId convertM2ResourceSearchIdToNormal(ModuleRevisionId mrid) {
         if (mrid.getOrganisation() == null || mrid.getOrganisation().indexOf('/') == -1) {
             return mrid;
