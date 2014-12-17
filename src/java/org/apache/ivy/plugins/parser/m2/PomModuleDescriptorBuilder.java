@@ -133,12 +133,12 @@ public class PomModuleDescriptorBuilder {
                     dd.addDependencyConfiguration("optional", "compile(*)");
                     // dd.addDependencyConfiguration("optional", "provided(*)");
                     dd.addDependencyConfiguration("optional", "master(*)");
-
                 } else {
                     dd.addDependencyConfiguration("compile", "compile(*)");
                     // dd.addDependencyConfiguration("compile", "provided(*)");
                     dd.addDependencyConfiguration("compile", "master(*)");
                     dd.addDependencyConfiguration("runtime", "runtime(*)");
+                    dd.addDependencyConfiguration("sources", "sources()");
                 }
             }
         });
@@ -163,11 +163,11 @@ public class PomModuleDescriptorBuilder {
                     dd.addDependencyConfiguration("optional", "compile(*)");
                     dd.addDependencyConfiguration("optional", "provided(*)");
                     dd.addDependencyConfiguration("optional", "master(*)");
-
                 } else {
                     dd.addDependencyConfiguration("runtime", "compile(*)");
                     dd.addDependencyConfiguration("runtime", "runtime(*)");
                     dd.addDependencyConfiguration("runtime", "master(*)");
+                    dd.addDependencyConfiguration("sources", "sources()");
                 }
             }
         });
