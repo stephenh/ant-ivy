@@ -108,6 +108,8 @@ public interface ModuleDescriptor extends ExtendableItem, ArtifactInfo,
      * @return all the configurations declared by this module as an array.
      */
     Configuration[] getConfigurations();
+    
+    void addConfiguration(Configuration configuration);
 
     String[] getConfigurationsNames();
 
