@@ -34,7 +34,16 @@ public final class ExtendableItemHelper {
         Map ret = new HashMap();
         for (int i = 0; i < attributes.getLength(); i++) {
             if (attributes.getQName(i).startsWith(prefix)) {
-                ret.put(attributes.getQName(i).substring(prefix.length()), attributes.getValue(i));
+                String attributeName = attributes.getQName(i).substring(prefix.length());
+                // Put back "m:" so that we don't break AbstractArtifact.hashCode between MDArtifacts and DefaultArtifacts
+                //
+                // Technically the resolver cache file (the one with "extra-classifier" in it) should store the namespace
+                // of the attribute, and even further the attribute keys should always be with the fully qualified namespace
+                // and not just the alias used in the Ivy xml file.
+                if (attributeName.equals("classifier")) {
+                    attributeName = "m:" + attributeName;
+                }
+                ret.put(attributeName, attributes.getValue(i));
             }
         }
         return ret;
