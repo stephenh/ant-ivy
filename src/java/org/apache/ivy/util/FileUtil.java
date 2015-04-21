@@ -136,7 +136,7 @@ public final class FileUtil {
     public static boolean deepCopy(File src, File dest, CopyProgressListener l, boolean overwrite)
             throws IOException {
         // the list of files which already exist in the destination folder
-        List/* <File> */existingChild = Collections.EMPTY_LIST;
+        List<File> existingChild = Collections.emptyList();
         if (dest.exists()) {
             if (!dest.isDirectory()) {
                 // not expected type, remove
@@ -172,7 +172,7 @@ public final class FileUtil {
         }
         // some file exist in the destination but not in the source: delete them
         for (int i = 0; i < existingChild.size(); i++) {
-            forceDelete((File) existingChild.get(i));
+            forceDelete(existingChild.get(i));
         }
         return true;
     }
@@ -364,8 +364,8 @@ public final class FileUtil {
      * File("test/dir1/dir2/file.txt") } Note that if root is not an ancester of file, or if root is
      * null, all directories from the file system root will be returned.
      */
-    public static List getPathFiles(File root, File file) {
-        List ret = new ArrayList();
+    public static List<File> getPathFiles(File root, File file) {
+        List<File> ret = new ArrayList<File>();
         while (file != null && !file.getAbsolutePath().equals(root.getAbsolutePath())) {
             ret.add(file);
             file = file.getParentFile();
@@ -388,11 +388,12 @@ public final class FileUtil {
      *            a Collection of filenames which must be excluded from listing
      * @return A collectoin containing all the files of the given directory and it's subdirectories.
      */
-    public static Collection listAll(File dir, Collection ignore) {
-        return listAll(dir, new ArrayList(), ignore);
+    public static Collection<File> listAll(File dir, Collection<String> ignore) {
+        return listAll(dir, new ArrayList<File>(), ignore);
     }
 
-    private static Collection listAll(File file, Collection list, Collection ignore) {
+    private static Collection<File> listAll(File file, Collection<File> list,
+            Collection<String> ignore) {
         if (ignore.contains(file.getName())) {
             return list;
         }
@@ -444,7 +445,7 @@ public final class FileUtil {
      *             if path is null.
      */
     public static File normalize(final String path) {
-        Stack s = new Stack();
+        Stack<String> s = new Stack<String>();
         String[] dissect = dissect(path);
         s.push(dissect[0]);
 
@@ -581,50 +582,62 @@ public final class FileUtil {
             this.wrapped = wrapped;
         }
 
+        @Override
         public void close() throws IOException {
             // do not close
         }
 
+        @Override
         public int read() throws IOException {
             return wrapped.read();
         }
 
+        @Override
         public int hashCode() {
             return wrapped.hashCode();
         }
 
+        @Override
         public int read(byte[] b) throws IOException {
             return wrapped.read(b);
         }
 
+        @Override
         public boolean equals(Object obj) {
             return wrapped.equals(obj);
         }
 
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
             return wrapped.read(b, off, len);
         }
 
+        @Override
         public long skip(long n) throws IOException {
             return wrapped.skip(n);
         }
 
+        @Override
         public String toString() {
             return wrapped.toString();
         }
 
+        @Override
         public int available() throws IOException {
             return wrapped.available();
         }
 
+        @Override
         public void mark(int readlimit) {
             wrapped.mark(readlimit);
         }
 
+        @Override
         public void reset() throws IOException {
             wrapped.reset();
         }
 
+        @Override
         public boolean markSupported() {
             return wrapped.markSupported();
         }
