@@ -64,6 +64,7 @@ import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.core.sort.SortEngine;
 import org.apache.ivy.core.sort.SortOptions;
 import org.apache.ivy.plugins.conflict.ConflictManager;
+import org.apache.ivy.plugins.latest.ArtifactInfo;
 import org.apache.ivy.plugins.parser.ModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.ModuleDescriptorParserRegistry;
 import org.apache.ivy.plugins.repository.url.URLResource;
@@ -316,9 +317,12 @@ public class ResolveEngine {
 
                             // The evicted modules have no description, so we can't put the status
                             String status = depDescriptor == null ? "?" : depDescriptor.getStatus();
-                            Message.debug("storing dependency " + depResolvedId + " in props");
-                            props.put(depRevisionId.encodeToString(), rev + " " + status + " "
-                                    + forcedRev + " " + depResolvedId.getBranch());
+                            String existing = props.getProperty(depRevisionId.encodeToString());
+                            if (existing == null || isNewer(existing, forcedRev)) {
+                                Message.debug("storing dependency " + depResolvedId + " in props");
+                                props.put(depRevisionId.encodeToString(), rev + " " + status + " "
+                                        + forcedRev + " " + depResolvedId.getBranch());
+                            }
                         }
                     }
                 }
@@ -357,6 +361,15 @@ public class ResolveEngine {
             context.setResolveData(null);
             setDictatorResolver(oldDictator);
         }
+    }
+
+    /** @return whether forcedRev is newer than existingEncoded */
+    private boolean isNewer(String existing, String forcedRev) {
+        String[] parts = existing.split(" ");
+        ArtifactInfo[] artifacts = new ArtifactInfo[] {new StubArtifactInfo(parts[0]),
+                new StubArtifactInfo(forcedRev)};
+        settings.getDefaultLatestStrategy().sort(artifacts);
+        return artifacts[0].getRevision().equals(forcedRev);
     }
 
     public void outputReport(ResolveReport report, ResolutionCacheManager cacheMgr,
@@ -1214,6 +1227,23 @@ public class ResolveEngine {
 
     private void checkInterrupted() {
         IvyContext.getContext().getIvy().checkInterrupted();
+    }
+
+    // Hack to sort revision strings that are just strings, e.g. without actual artifacts
+    private static class StubArtifactInfo implements ArtifactInfo {
+        private final String revision;
+
+        public StubArtifactInfo(String revision) {
+            this.revision = revision;
+        }
+
+        public String getRevision() {
+            return revision;
+        }
+
+        public long getLastModified() {
+            return 0;
+        }
     }
 
 }
